@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sentiment Analyzer</title>
+  <style>
+    body {
+      font-family: Arial;
+      margin: 50px;
+      text-align: center;
+    }
+    textarea {
+      width: 60%;
+      height: 100px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      font-size: 16px;
+      padding: 10px 20px;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Twitter Sentiment Analyzer</h1>
+  <textarea id="inputText" placeholder="Enter a tweet here..."></textarea><br>
+  <button onclick="analyzeSentiment()">Analyze</button>
+  <div id="result"></div>
+
+  <script>
+    async function analyzeSentiment() {
+  const text = document.getElementById('inputText').value;
+  try {
+    const response = await fetch('http://127.0.0.1:5000/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    document.getElementById('result').innerText = "Sentiment: " + data.sentiment;
+  } catch (error) {
+    document.getElementById('result').innerText = "Error: " + error.message;
+    console.error("Request failed:", error);
+  }
+}
+
+  </script>
+</body>
+</html>
